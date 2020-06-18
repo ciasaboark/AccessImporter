@@ -1,3 +1,6 @@
 watchdog
 pyodbc
 configargparse
+xlrd
+pywin32
+winreg
