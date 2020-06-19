@@ -428,7 +428,7 @@ def import_file(file: str):
     logger.info("╽ Finished import of {}".format(file))
     logger.info("╽ Status: {}".format(moveFile))
     logger.info("╽")
-    logger.info("╰╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼")      
+    logger.info("╰╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼")     
         
             
 
