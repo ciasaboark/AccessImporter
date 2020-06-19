@@ -69,7 +69,7 @@ class Watcher(win32serviceutil.ServiceFramework):
         opts.log_file = Registry.read_key('log_file', "C:\\db\\logs\\watcher.log")
 
         try:
-            fh = TimedRotatingFileHandler(opts.log_file, when='d', interval=1, backupCount=7, encoding='utf-8')
+            fh = TimedRotatingFileHandler(opts.log_file, when='midnight', backupCount=7, encoding='utf-8')
             fh.setLevel(logging.INFO)
             fh.setFormatter(formatter)
             logger.addHandler(fh)
