@@ -133,11 +133,11 @@ By default the script will run using the Local System account. This may be an is
 
 In the `Log On` tab select `This account`. Click on `Browse` and type in the login name of the user to use. Click on `Check Names` and the login information should fill in. Click on OK. In the previous window type in the users current password in both the `Password` and `Confirm password` boxes.
 
-<div style="margin: 32px; color: white; background-color: #ff3399; padding: 16px">
-Warning
 
-If the windows account password is changed this step must be repeated to update the service with the correct password. The script will continue to supply the old password and may trigger an account lock out if it is started too often with an old password.
-</div>
+>Warning
+>
+>If the windows account password is changed this step must be repeated to update the service with the correct password. The script will continue to supply the old password and may trigger an account lock out if it is started too often with an old password.
+
 
 In the `Recovery` tab, change both `First failure` and `Second failure` to `Restart the Service`.
 
