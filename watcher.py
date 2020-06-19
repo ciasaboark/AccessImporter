@@ -17,7 +17,6 @@ from datetime import datetime
 from pathlib import Path
 from logging.handlers import TimedRotatingFileHandler
 from logging.handlers import NTEventLogHandler
-from smwinservice import SMWinservice
 import win32serviceutil, win32service
 import win32event
 import servicemanager
