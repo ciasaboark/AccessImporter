@@ -113,7 +113,6 @@ eh.setLevel(logging.WARNING)
 eh.setFormatter(formatter)
 logger.addHandler(eh)
 
-write_default_opts()
 
 class Watcher(win32serviceutil.ServiceFramework):
     """The Windows service responsible for monitoring the import directory for Excel files.
@@ -132,6 +131,7 @@ class Watcher(win32serviceutil.ServiceFramework):
         # We need to read the log_file setting before anything else so we can begin logging to a
         # file as soon as possible
         key = winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, REGISTRY_KEY_NAME)
+        write_default_opts(key)
         opts.log_file = read_key(key, 'log_file', "C:\\db\\logs\\watcher.log")
 
         try:
