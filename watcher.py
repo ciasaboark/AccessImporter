@@ -24,7 +24,7 @@ import configargparse
 import types
 from registry import Registry
 
-VERSION = "0.0.7"
+VERSION = "1.0.0"
 
 #The interval (in seconds) between sleep cycles. A manual check is performed on each wake
 SLEEP_INTERVAL = 60 * 10

@@ -19,7 +19,7 @@ On the initial install screen check `Add Python to PATH` then click `Customize I
 On the Advanced Options screen check `Install for all users`.  This will change the install location to 'C:\Program Files\Python--version--'.  Click `Install`
 
 ### Git
-Git is not required for installation, but can be used to upgrade the script later if changes are made.
+Git is not required for installation, but can be used to easily install the script and upgrade later if changes are made.
 
 Download and install the latest version of Git from https://git-scm.com/download/win. The default option are recommended.
 
@@ -129,12 +129,12 @@ Switch back to the Windows Services window and double click on the `Container Tr
 
 In the `General` tab select startup type `Automatic`.
 
-By default the script will run using the Local System account. This may be an issue if network drives were selected in the _Configuring the Script Settings_ steps.
+By default the script will run using the Local System account. This may be an issue if network drives were selected in the [Configure the Script Settings](#configure-the-script-settings) section.
 
 In the `Log On` tab select `This account`. Click on `Browse` and type in the login name of the user to use. Click on `Check Names` and the login information should fill in. Click on OK. In the previous window type in the users current password in both the `Password` and `Confirm password` boxes.
 
 
->Warning
+>**Warning!**
 >
 >If the windows account password is changed this step must be repeated to update the service with the correct password. The script will continue to supply the old password and may trigger an account lock out if it is started too often with an old password.
 
