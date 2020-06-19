@@ -37,7 +37,7 @@ IMPORT_FILE_TYPES = [".xls", ".xlsx"]
 logger = None
 opts = types.SimpleNamespace()
 
-def read_key(key, name: str, def_val: str):
+def read_key(key, name: str, def_val):
     """Read the current value for key 'name' from the Windows registry.
     
     The default value will be used if the registry could not be opened
@@ -78,6 +78,29 @@ def write_key(key, name, val):
         logger.error("Unable to write value '{0}' to value name '{1}' in key 'HKLM\\{2}'".format(val, name, REGISTRY_KEY_NAME))
         logger.exception(e)
 
+def write_default_opts(key):
+    """Write default values to the Windows registry if they do not already exist
+    
+    Args:
+        key: The base key to write values into.    
+    """
+    write_default(key, 'watch', "C:\\import")
+    write_default(key, 'archive', "C:\import\\archive")
+    write_default(key, 'errors', "C:\\import\\archive\\errors")
+    write_default(key, 'database', "C:\\db\\database.accdb")
+    write_default(key, 'log_file', "C:\\db\\logs\\watcher.log")
+
+def write_default(key, name: str, value: str):
+    """Write a value to the Windows registry if it does not exist
+    
+    Args:
+        key: The base key to write values into.
+        name (str): The name of the value to write.
+        val (str): The value to write.
+    """
+    if read_key(key, name, None) == None:
+        write_key(key, name, value)
+
 # Set up the logger.  We won't know what file to log to yet, so we will start by logging
 # only warnings and above to the Windows event log
 logger = logging.getLogger()
@@ -89,6 +112,8 @@ eh = NTEventLogHandler('container_tracking_importer')
 eh.setLevel(logging.WARNING)
 eh.setFormatter(formatter)
 logger.addHandler(eh)
+
+write_default_opts()
 
 class Watcher(win32serviceutil.ServiceFramework):
     """The Windows service responsible for monitoring the import directory for Excel files.
