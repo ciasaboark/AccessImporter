@@ -159,7 +159,7 @@ In the `Event sources` option select `container_tracking_importer`. Click on OK.
 
 If an Excel file does not import it will either be left in the `watch` directory if the import can be attempted again later, or moved to the `errors` directory if the script can not recover from the error.
 
-Logging information is written to the log file selected in the _Configure the Script Settings_ section. An exception message and stack trace will be embedded for any failed import.
+Logging information is written to the log file selected in the [Configure the Script Settings](#configure-the-script-settings) section. An exception message and stack trace will be embedded for any failed import.
 
 Successful import
 ```
@@ -168,13 +168,14 @@ Successful import
 ╽ Beginning import of C:\import\Weekly Tracked Pallets Shipped.xlsx
 ╽
 ╰╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼
-Beginning import of file C:\import\Weekly Tracked Pallets Sha1 hash of file: 3ae1d6c483b1e14eec7d5d709ce5cc9fed11326a
+Beginning import of file C:\import\Weekly Tracked Pallets Shipped.xlsx
+Sha1 hash of file: 3ae1d6c483b1e14eec7d5d709ce5cc9fed11326a
 Reading records
 File appears to be for DC 7.0
 Read 1417 records
 Writing records into database
 Wrote 1417 records
-Archiving file as 'C:\import\archive\Weekly Tracked Pallets Shipped.
+Archiving file as 'C:\import\archive\Weekly Tracked Pallets Shipped.xlsx.2020-06-18-13-29-26-405622'.
 ╭╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼
 ╽
 ╽ Finished import of C:\import\Weekly Tracked Pallets Shipped.xlsx
@@ -219,9 +220,9 @@ Archiving file as 'C:\import\archive\errors\Weekly Tracked Pallets Shipped.xlsx.
 ╰╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼╼
 ```
 
-## Updating to a new version
-### Update the script
-Use Git to install an updated version of the software. If updates are available git will show output similar to the following example. If updates are not available a message will print saying everything is up to date.
+## Updating to a New Version
+### Update the Script
+Use Git to install an updated version of the software. If updates are available git will show output similar to the following example.
 
 ```
 c:\Users\My User\Apps\AccessImporter>git pull
@@ -232,6 +233,8 @@ Fast-forward
  2 files changed, 1 insertion(+), 2 deletions(-)
 ```
 
+If updates are not available a message will print saying everything is up to date.
+
 ```
 c:\Users\My User\Apps\AccessImporter>git pull
 Already up to date.
@@ -239,7 +242,7 @@ Already up to date.
 
 If Git was not installed a new copy of the zip file must be downloaded and extracted. Unzip the contents into the same directory as the old install, overwriting any old files.
 
-#### Updating the service
+### Updating the Service
 After a new version of the script is downloaded Windows will need to know about the updated service.
 
 Open a cmd.exe window as an administrator. Change to the installation directory and use `python watcher.py update` to update the service.
@@ -250,6 +253,6 @@ Changing service configuration
 Service updated
 ```
 
-Updating the service may reset some configuration options. Refer to the _Configuring the Service_ section to reconfigure the service.
+Updating the service may reset some configuration options. Refer to the [Configure the Service](#configure-the-service) section to reconfigure the service.
 
 
