@@ -46,7 +46,7 @@ The Access Importer script can be installed either by downloading a zip file or 
 
 If Git was not installed open https://github.com/ciasaboark/AccessImporter. Click on `Clone or download` and choose `Download ZIP`.  The zip file will contain a folder called AccessImporter-master. Extract this folder wherever you want to install the program.
 
-If Git was installed open a cmd.exe window. Use `git clone https://github.com/ciasaboark/AccessImporter.git` to 
+If Git was installed open a cmd.exe window. Type `git clone https://github.com/ciasaboark/AccessImporter.git` to clone a fresh copy of the repository.
 
 ```
 C:\Users\My User>cd Apps
@@ -61,9 +61,9 @@ Unpacking objects: 100% (41/41), 19.59 KiB | 185.00 KiB/s, done.
 ```
 
 ### Install Python Modules
-The script uses a few Python libraries. To install the libraries open a cmd.exe window as an Administrator.
+The script uses a few Python libraries. To install the libraries open a cmd.exe window as an Administrator. Change to the installation directory for the script.
 
-Change to the installed directory and use pip to install the packages.
+Type `pip install -r requirements.txt` to install the required packages.
 
 ```
 c:\Users\My User\Apps\AccessImporter>pip install -r requirements.txt
@@ -86,7 +86,7 @@ Successfully installed configargparse-1.2.3 pyodbc-4.0.30 pywin32-228 watchdog-0
 
 
 ### Install the Script as a Windows Service
-The script will run in the background as a Windows service. To install the service open a cmd.exe window as an administrator and change to the installed directory.
+The script will run in the background as a Windows service. To install the service open a cmd.exe window as an administrator and change to the installation directory for the script.
 
 ```
 c:\Users\My User\Apps\AccessImporter>python watcher.py install
@@ -97,7 +97,7 @@ Service installed
 ### Create the Required Directories
 The script will need three separate directories to hold the data.
 
-- An import directory to watch.
+- An import directory to watch to watch for newly created Excel files.
 - An archive directory to hold successfully imported Excel files. This must not be the same directory as the import directory.
 - An archive error directory to hold Excel files that could not be imported. This must not be the same directory as the import directory.
 
@@ -120,7 +120,7 @@ There should be five configuration options to set. Change each to point to the d
 - `archive`: The directory to hold successfully imported Excel files. This must not be the same directory as the `watch` directory, but may be a sub directory of the `watch` directory.
 - `errors`: The directory to hold Excel files that could not be imported. This must not be the same directory as the `watch` directory, but may be a sub directory of the `watch` directory.
 - `log_file`: The name of the log file. This must be a full path with the file name (i.e. `C:\logs\importer.log`). The log file will be rotated every night and the previous seven days of log files will be kept. This file should not be in the `watch` directory or it will trigger excessive logging.
-- `database`: The full path of the Access database to import data into.
+- `database`: The full path of the Access database to import the Excel data into.
 
 ### Configure the Service
 By default the service will be set to run manually. If desired the service can be configured to start automatically.
@@ -133,6 +133,12 @@ By default the script will run using the Local System account. This may be an is
 
 In the `Log On` tab select `This account`. Click on `Browse` and type in the login name of the user to use. Click on `Check Names` and the login information should fill in. Click on OK. In the previous window type in the users current password in both the `Password` and `Confirm password` boxes.
 
+<div style="margin: 32px; color: white; background-color: #ff3399; padding: 16px">
+Warning
+
+If the windows account password is changed this step must be repeated to update the service with the correct password. The script will continue to supply the old password and may trigger an account lock out if it is started too often with an old password.
+</div>
+
 In the `Recovery` tab, change both `First failure` and `Second failure` to `Restart the Service`.
 
 Click on OK to save the settings.
@@ -140,6 +146,8 @@ Click on OK to save the settings.
 
 ### Run the Service
 In the Windows Services window double click on the `Container Tracking Importer` service. Click on `start` again. If the configuration options were set correctly the service should start.
+
+Drag and drop an Excel file into the `watch` directory. The file should process within 1-2 seconds and will be moved to either the `archive` or `errors` directory.
 
 
 ## Checking for Errors
@@ -193,13 +201,13 @@ Unable to import data from file: ('23000', '[23000] [Microsoft][ODBC Microsoft A
 Unable to import data due to an unrecoverable SQL error.
 ('23000', '[23000] [Microsoft][ODBC Microsoft Access Driver] The changes you requested to the table were not successful because they would create duplicate values in the index, primary key, or relationship. Change the data in the field or fields that contain duplicate data, remove the index, or redefine the index to permit duplicate entries and try again. (-1605) (SQLExecDirectW)')
 Traceback (most recent call last):
-  File "c:\Users\Jonathan Nelson\Dropbox\Projects\AccessImporter\watcher.py", line 372, in import_file
+  File "c:\Users\My User\Dropbox\Projects\AccessImporter\watcher.py", line 372, in import_file
     importer.begin_import()
-  File "c:\Users\Jonathan Nelson\Dropbox\Projects\AccessImporter\importer.py", line 36, in begin_import
+  File "c:\Users\My User\Dropbox\Projects\AccessImporter\importer.py", line 36, in begin_import
     self.insert_rows(importData)
-  File "c:\Users\Jonathan Nelson\Dropbox\Projects\AccessImporter\importer.py", line 102, in insert_rows
+  File "c:\Users\My User\Dropbox\Projects\AccessImporter\importer.py", line 102, in insert_rows
     raise e
-  File "c:\Users\Jonathan Nelson\Dropbox\Projects\AccessImporter\importer.py", line 86, in insert_rows
+  File "c:\Users\My User\Dropbox\Projects\AccessImporter\importer.py", line 86, in insert_rows
     cursor.execute("INSERT INTO [{0}] ([DC ID], [DC Name], [Store ID], [Store Name], [Address], [City], [State],"
 pyodbc.IntegrityError: ('23000', '[23000] [Microsoft][ODBC Microsoft Access Driver] The changes you requested to the table were not successful because they would create duplicate values in the index, primary key, or relationship. Change the data in the field or fields that contain duplicate data, remove the index, or redefine the index to permit duplicate entries and try again. (-1605) (SQLExecDirectW)')
 Archiving file as 'C:\import\archive\errors\Weekly Tracked Pallets Shipped.xlsx.2020-06-18-13-31-55-652917'.
