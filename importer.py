@@ -1,4 +1,5 @@
-import csv, time, json, logging, traceback, os
+import csv, time, json, logging, traceback, os, datetime
+import xlrd
 from xlrd import open_workbook
 from exceptions import ImportException, FileFormatException
 
@@ -54,7 +55,23 @@ class Importer:
                 keys[col]: sheet.cell(row, col).value 
                 for col in range(sheet.ncols)
             }
-            data.append(d)      
+            # Excel stores the date as a number, convert back to a string
+            # Convert to a datetime date string in ISO format (YYYY-MM-DD)
+            dt_xl = d.get('Transaction Date')
+            logger.debug("read date as {}".format(dt_xl))
+
+            dt = xlrd.xldate_as_datetime(dt_xl, book.datemode)
+            logger.debug("As datetime {}".format(dt))
+            d['Transaction DateTime'] = dt
+
+            dts = dt.date().isoformat()
+            logger.debug("As date string {}".format(dts))
+
+            d['Transaction Date String'] = dts
+            data.append(d)
+
+            if row == 2:
+                logger.info("File appears to be for DC {}".format(d.get('DC Id')))
         
         logger.info('Read {0} records'.format(len(data)))
         return data
@@ -77,7 +94,7 @@ class Importer:
                             row.get('City'),
                             row.get('State'),
                             row.get('Zip'),
-                            row.get('Transaction Date'),
+                            row.get('Transaction DateTime'),
                             row.get('Container Type'),
                             row.get('Container Qty')
                         )
