@@ -21,85 +21,19 @@ import win32serviceutil, win32service
 import win32event
 import servicemanager
 import configargparse
-import winreg
 import types
+from registry import Registry
 
 VERSION = "0.0.7"
 
 #The interval (in seconds) between sleep cycles. A manual check is performed on each wake
 SLEEP_INTERVAL = 60 * 10
 
-REGISTRY_KEY_NAME = 'SOFTWARE\\ContainerTracking'
-
 IMPORT_FILE_TYPES = [".xls", ".xlsx"]
 
 #Keep the logger and the configuration as global variables
 logger = None
 opts = types.SimpleNamespace()
-
-def read_key(key, name: str, def_val):
-    """Read the current value for key 'name' from the Windows registry.
-    
-    The default value will be used if the registry could not be opened
-    or if the value name does not exist for the given key
-    
-    Args:
-        key: the base key to pull values from
-        name (str): the value name to pull from the base key
-        def_val (str): a default value to use if an error occurs reading from the registry
-    
-    Returns:
-        str: The value read from the registry or def_val
-    """
-    logger.info("checking for key {}".format(name))
-    val = def_val
-    try:
-        val = winreg.QueryValueEx(key, name)[0]
-    except FileNotFoundError as e:
-        logger.warning("Unable to read config option '{0}' from registry, using default value of '{1}'"
-            .format(name, def_val))
-        write_key(key, name, val)
-        
-    return val
-
-def write_key(key, name, val):
-    """Write a value into the Windows registry.
-
-    Args:
-        key: The base key to write values into.
-        name (str): The name of the value to write.
-        val (str): The value to write.
-
-    """
-    logger.info("Inserting value '{0}' into registry as 'HKLM\\{1}\{2}'".format(def_val, REGISTRY_KEY_NAME, name))
-    try:
-        winreg.SetValueEx(key, name, 0, winreg.REG_SZ, val)
-    except Exception as e:
-        logger.error("Unable to write value '{0}' to value name '{1}' in key 'HKLM\\{2}'".format(val, name, REGISTRY_KEY_NAME))
-        logger.exception(e)
-
-def write_default_opts(key):
-    """Write default values to the Windows registry if they do not already exist
-    
-    Args:
-        key: The base key to write values into.    
-    """
-    write_default(key, 'watch', "C:\\import")
-    write_default(key, 'archive', "C:\import\\archive")
-    write_default(key, 'errors', "C:\\import\\archive\\errors")
-    write_default(key, 'database', "C:\\db\\database.accdb")
-    write_default(key, 'log_file', "C:\\db\\logs\\watcher.log")
-
-def write_default(key, name: str, value: str):
-    """Write a value to the Windows registry if it does not exist
-    
-    Args:
-        key: The base key to write values into.
-        name (str): The name of the value to write.
-        val (str): The value to write.
-    """
-    if read_key(key, name, None) == None:
-        write_key(key, name, value)
 
 # Set up the logger.  We won't know what file to log to yet, so we will start by logging
 # only warnings and above to the Windows event log
@@ -127,21 +61,18 @@ class Watcher(win32serviceutil.ServiceFramework):
     def __init__(self, args):
         """Set up our run-time options and switch to the rotating log
         """
+        # Write default settings to the registry if they have not already been defined
+        Registry.write_default_opts()
 
         # We need to read the log_file setting before anything else so we can begin logging to a
         # file as soon as possible
-        key = winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, REGISTRY_KEY_NAME)
-        write_default_opts(key)
-        opts.log_file = read_key(key, 'log_file', "C:\\db\\logs\\watcher.log")
+        opts.log_file = Registry.read_key('log_file', "C:\\db\\logs\\watcher.log")
 
         try:
             fh = TimedRotatingFileHandler(opts.log_file, when='d', interval=1, backupCount=7, encoding='utf-8')
             fh.setLevel(logging.INFO)
             fh.setFormatter(formatter)
             logger.addHandler(fh)
-
-            # remove the windows event log handler
-            logger.removeHandler(eh)
         except Exception as e:
             logger.error("Unable to initialize log file: '{}'. Verify the parent folder exists and that you have write access.".format(e))
             sys.exit(1)
@@ -149,13 +80,13 @@ class Watcher(win32serviceutil.ServiceFramework):
         logger.info("Service initializing")
         logger.info("Reading settings from HKEY_LOCAL_MACHINE\\SOFTWARE\\ContainerTracking\\")
 
-        opts.watch = read_key(key, 'watch', "C:\\import")
-        opts.archive = read_key(key, 'archive', "C:\import\\archive")
-        opts.errors = read_key(key, 'errors', "C:\\import\\archive\\errors")
-        opts.database = read_key(key, 'database', "C:\\db\\database.accdb")
+        opts.watch = Registry.read_key('watch', "C:\\import")
+        opts.archive = Registry.read_key('archive', "C:\import\\archive")
+        opts.errors = Registry.read_key('errors', "C:\\import\\archive\\errors")
+        opts.database = Registry.read_key('database', "C:\\db\\database.accdb")
 
         logger.info("Running with options: {}".format(opts))
-        winreg.CloseKey(key)
+        Registry.close_key()
 
         #Keep track of the last time the service woke (in epoch seconds)
         self.last_wake = -1
@@ -252,10 +183,10 @@ class Watcher(win32serviceutil.ServiceFramework):
         exists = os.path.exists(opts.watch)
         isFile = os.path.isfile(opts.watch)
         if not exists:
-            logger.warning("Will not watch for new files in '{0}'. Directory does not exist.".format(opts.watch))
+            logger.error("Can not watch for new files in '{0}'. Directory does not exist.".format(opts.watch))
             sys.exit(1)
         elif isFile:
-            logger.warning("Will not watch for new files in '{0}'. Path is a file, not a directory.".format(opts.watch))
+            logger.error("Can not watch for new files in '{0}'. Path is a file, not a directory.".format(opts.watch))
             sys.exit(1)
         else:
             logger.debug("Adding '{0}' to the watched directories list".format(opts.watch))
@@ -318,7 +249,7 @@ class Watcher(win32serviceutil.ServiceFramework):
                     self.manual_import()
                     logger.info("Back to sleep 😴")
         except Exception as e:
-            logger.debug("Error with watchdog.  Exiting...")
+            logger.error("Error with watchdog.  Exiting...")
             logger.exception(e)
             sys.exit(1)           
             
