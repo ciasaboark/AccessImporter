@@ -5,18 +5,37 @@
 ### Microsoft Access Driver
 The Access Database driver is required for the python odbc connection. This driver
 is installed as part of Access, but can be installed separately.
-The bit version of the driver (32/64) must match the bit version of the installed
-Python interpreter.  The standalone driver can be downloaded from https://www.microsoft.com/en-US/download/details.aspx?id=13255.
+
+If you already have Microsoft Office installed you can check which bit version is installed by opening one of the Office applications (Word, Excel, etc...).  Click on `File`, then click on `Account`.  In the window that opens click on the `About` button.
+
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/excel1.png" style="width: 400px"/>
+
+At the top of the window that opens there will be a line showing the application version and bit version.
+
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/excel2.png" style="width: 400px"/>
+
+The bit version (32 bit/64 bit) of the Access driver and the bit version of the Python interpreter must match.
+
+If Office is not installed a standalone driver can be downloaded from https://www.microsoft.com/en-US/download/details.aspx?id=13255.
+
+
 
 ### Python 
 Python 3.3 or later is required. The scripts were tested against Python 3.8.3.
 Download the latest Python 3 version at https://www.python.org/downloads/windows/.
 
-Choose the Python version that matches the Microsoft Access driver version. By default Python will install to the users application folder and the interpreter will not be added to the environment path.
+Choose the Python bit version that matches the Microsoft Access driver version.
+
+By default Python will install to the users application folder and the interpreter will not be added to the environment path.
 
 On the initial install screen check `Add Python to PATH` then click `Customize Installation`. On the next screen leave all options selected and click `Next`.
 
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/python1.png" style="width: 400px"/>
+
+
 On the Advanced Options screen check `Install for all users`.  This will change the install location to 'C:\Program Files\Python--version--'.  Click `Install`
+
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/python2.png" style="width: 400px"/>
 
 ### Git
 Git is not required for installation, but can be used to easily install the script and upgrade later if changes are made.
@@ -109,6 +128,8 @@ The script will also need to know where the Access Database is located as well a
 In the cmd.exe window type `mmc Services.msc` to open the Windows Services window.
 
 The script was installed as `Container Tracking Importer`. Scroll down to this script and double click on the service name.
+
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/service1.png" style="width: 400px" />
 
 Click on `Start` to start the service. You will see a error dialog saying that Windows could not start the service. This is fine. The initial run will populate configuration options in the Windows registry.
 
@@ -240,12 +261,12 @@ c:\Users\My User\Apps\AccessImporter>git pull
 Already up to date.
 ```
 
-If Git was not installed a new copy of the zip file must be downloaded and extracted. Unzip the contents into the same directory as the old install, overwriting any old files.
+If the script was not installed using Git a new copy of the zip file must be downloaded and extracted. Unzip the contents into the same directory as the old install, overwriting any old files.
 
 ### Updating the Service
 After a new version of the script is downloaded Windows will need to know about the updated service.
 
-Open a cmd.exe window as an administrator. Change to the installation directory and use `python watcher.py update` to update the service.
+Open a cmd.exe window as an administrator. Change to the script installation directory and use `python watcher.py update` to update the service.
 
 ```
 c:\Users\My User\Apps\AccessImporter>python watcher.py update
