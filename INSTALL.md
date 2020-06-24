@@ -8,11 +8,11 @@ is installed as part of Access, but can be installed separately.
 
 If you already have Microsoft Office installed you can check which bit version is installed by opening one of the Office applications (Word, Excel, etc...).  Click on `File`, then click on `Account`.  In the window that opens click on the `About` button.
 
-<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/excel1.png" style="width: 400px"/>
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/excel1.png" width="400px"/>
 
 At the top of the window that opens there will be a line showing the application version and bit version.
 
-<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/excel2.png" style="width: 400px"/>
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/excel2.png" width="400px"/>
 
 The bit version (32 bit/64 bit) of the Access driver and the bit version of the Python interpreter must match.
 
@@ -30,12 +30,12 @@ By default Python will install to the users application folder and the interpret
 
 On the initial install screen check `Add Python to PATH` then click `Customize Installation`. On the next screen leave all options selected and click `Next`.
 
-<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/python1.png" style="width: 400px"/>
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/python1.png" width="400px"/>
 
 
 On the Advanced Options screen check `Install for all users`.  This will change the install location to 'C:\Program Files\Python--version--'.  Click `Install`
 
-<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/python2.png" style="width: 400px"/>
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/python2.png" width="400px"/>
 
 ### Git
 Git is not required for installation, but can be used to easily install the script and upgrade later if changes are made.
@@ -129,7 +129,7 @@ In the cmd.exe window type `mmc Services.msc` to open the Windows Services windo
 
 The script was installed as `Container Tracking Importer`. Scroll down to this script and double click on the service name.
 
-<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/service1.png" style="width: 400px" />
+<img src="https://raw.githubusercontent.com/ciasaboark/AccessImporter/master/images/service1.png" width="400px" />
 
 Click on `Start` to start the service. You will see a error dialog saying that Windows could not start the service. This is fine. The initial run will populate configuration options in the Windows registry.
 
