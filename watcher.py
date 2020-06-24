@@ -70,7 +70,7 @@ class Watcher(win32serviceutil.ServiceFramework):
 
         try:
             fh = TimedRotatingFileHandler(opts.log_file, when='midnight', backupCount=7, encoding='utf-8')
-            fh.setLevel(logging.INFO)
+            fh.setLevel(logging.DEBUG)
             fh.setFormatter(formatter)
             logger.addHandler(fh)
         except Exception as e:
@@ -164,7 +164,6 @@ class Watcher(win32serviceutil.ServiceFramework):
         # Do we have an Access database driver installed?
         # Microsoft has two main versions. A old driver that can only access .mdb
         # databases, and a newer driver that can read .mdb and .accdb databases.
-        
         drivers = [x for x in pyodbc.drivers() if x.startswith('Microsoft Access Driver')]
         if len(drivers) == 0:
             logger.error('Unable to find any Access database drivers installed')
@@ -423,5 +422,9 @@ def log_access_driver_error():
     logger.info("╚═════════════════════════════════════════════════════════════════════╝")
 
 if __name__ == '__main__':
+    sh = logging.StreamHandler()
+    sh.setLevel(logging.DEBUG)
+    logging.getLogger().addHandler(sh)
+    Registry.write_default_opts()
     win32serviceutil.HandleCommandLine(Watcher)
 

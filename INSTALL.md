@@ -135,6 +135,12 @@ Click on `Start` to start the service. You will see a error dialog saying that W
 
 Type `regedit` in the cmd.exe window to open the Windows Registry. In the registry editor navigate to `HKEY_LOCAL_MACHINE\SOFTWARE\Container Tracking\`.
 
+>**Note**
+>If you are using the 32 bit version of Python use `regedt32` instead of `regedit`.
+>
+>The registry keys will be visible in `HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Container Tracking\`
+
+
 There should be five configuration options to set. Change each to point to the directory or file required.
 
 - `watch`: The directory to watch for new Excel files. These files will be automatically imported into the Access database.

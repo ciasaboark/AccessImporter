@@ -58,14 +58,14 @@ class Importer:
             # Excel stores the date as a number, convert back to a string
             # Convert to a datetime date string in ISO format (YYYY-MM-DD)
             dt_xl = d.get('Transaction Date')
-            logger.debug("read date as {}".format(dt_xl))
+            # logger.debug("read date as {}".format(dt_xl))
 
             dt = xlrd.xldate_as_datetime(dt_xl, book.datemode)
-            logger.debug("As datetime {}".format(dt))
+            # logger.debug("As datetime {}".format(dt))
             d['Transaction DateTime'] = dt
 
             dts = dt.date().isoformat()
-            logger.debug("As date string {}".format(dts))
+            # logger.debug("As date string {}".format(dts))
 
             d['Transaction Date String'] = dts
             data.append(d)
@@ -80,7 +80,10 @@ class Importer:
         # Insert all rows into the database. If we encounter an exception the transaction will be rolled
         # back to the time the database connection was established
         logger.info("Writing records into database")
-        with pyodbc.connect('Driver={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={0};'.format(self.database)) as conn:
+        logger.debug(self.database)
+        conn_str = rf'Driver={{Microsoft Access Driver (*.mdb, *.accdb)}};DBQ={self.database};'
+        logger.debug("Connection string: '{}'".format(conn_str))
+        with pyodbc.connect(conn_str) as conn:
             with conn.cursor() as cursor:
                 for row in importData:
                     try:

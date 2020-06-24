@@ -15,7 +15,9 @@ class Registry:
             val (str): The value to write.
         """
         logger.debug("Checking for default value for '{0}'".format(name))
-        if Registry.read_key(name, None) == None:
+        val = Registry.read_key(name, None)
+        logger.info("Found val '{}'".format(val))
+        if val == None:
             logger.info("Writing default value for '{0}': '{1}'".format(name, value))
             Registry.write_key(name, value)
 
@@ -50,7 +52,7 @@ class Registry:
         Returns:
             str: The value read from the registry or def_val
         """
-        logger.info("checking for key {}".format(name))
+        logger.info("reading value for key '{}'".format(name))
         val = def_val
         try:
             val = winreg.QueryValueEx(key, name)[0]
